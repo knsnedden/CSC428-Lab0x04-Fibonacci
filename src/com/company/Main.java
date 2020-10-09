@@ -3,7 +3,8 @@ package com.company;
 import java.lang.management.ManagementFactory;
 import java.lang.management.ThreadMXBean;
 import java.lang.Math;
-import java.util.Random;
+import java.util.Arrays;
+import java.util.ArrayList;
 
 public class Main {
 
@@ -23,47 +24,52 @@ public class Main {
 
     public static void timeTrial(){
         boolean keepGoing = true;
-        long recurTime = 0, maxTime = (long)Math.pow(2,40), prevRecurTime = 0;
-        int N = 1, prev_N = 0;
-        long x = 0;
+        long recurTime = 0, maxTime = (long)Math.pow(2,30), prevRecurTime = 0;
+        int N = 1, recurIndex = 0;
+        long x = 1, prev_x = 0, result = 0;
+        ArrayList<Long> recurTimeResults = new ArrayList<Long>();
 
         System.out.println("                             fibRecur(X)");
-        System.out.println("   N   |         X         |    Time     | Doubling Ratio | Exp. Doubling Ratio |");
+        System.out.println("   N   |         X         |    fib(X)     |    Time     | Doubling Ratio | Exp. Doubling Ratio |");
 
-        while (keepGoing || N > 64){
+        while (keepGoing){
             System.out.printf("%6d |", N);
-            long prev_x = x;
-            x = (long) Math.pow(10, N - 1) + 1;
-            System.out.printf("%18d |", x);
 
-            if (x < 1000) {
-                long timeBefore = getCpuTime();
-                fibRecur(x);
-                long timeAfter = getCpuTime();
-                recurTime = (timeAfter - timeBefore);
-                System.out.printf("%12d |", recurTime);
-                if (prevRecurTime == 0) {
-                    System.out.printf("       na       |          na         |");
-                } else {
-                    float pdr = (float) Math.pow(2, x) / (float) Math.pow(2, x);
-                    float dr = (float) recurTime / (float) prevRecurTime;
-                    System.out.printf("%15.2f |%20.2f |", dr, pdr);
-
+            if (recurTime <= maxTime){
+                System.out.printf("%18d |", x);
+                recurTime = 0;
+                for (int i = 0; i < 10; ++i){
+                    long timeBefore = getCpuTime();
+                    result = fibRecur(x);
+                    long timeAfter = getCpuTime();
+                    recurTime += timeAfter - timeBefore;
                 }
-                prevRecurTime = recurTime;
-            }else{
-                recurTime = maxTime;
-                System.out.printf("             |                |                     |");
+                recurTime = recurTime/10;
+                recurTimeResults.add(recurTime);
+                System.out.printf("%14d |%12d |", result, recurTime);
+                if (prev_x == 0 || x%2 == 1){
+                    System.out.printf("       --       |         --          |");
+                }
+                else{
+                    float pdr = (float)Math.pow(1.6180,x)/(float)Math.pow(1.6180,x/2);
+                    float dr = (float)recurTimeResults.get(recurIndex)/(float)recurTimeResults.get(recurIndex/2);
+                    System.out.printf("%15.2f |%20.2f |",dr, pdr);
+                }
+
+                recurIndex++;
+                prev_x = x;
+                x++;
+                N = (int)Math.ceil(Math.log(x+1)/Math.log(2));
+            }
+            else{
+                System.out.print("        --        |      --      |     --     |      --       |         --         |");
             }
 
 
             if (recurTime >= maxTime){
                 keepGoing = false;
             }
-
             System.out.println();
-            prev_N = N;
-            N = N*2;
         }
     }
 
