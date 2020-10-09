@@ -9,7 +9,10 @@ import java.util.ArrayList;
 public class Main {
 
     public static void main(String[] args) {
-        timeTrial();
+        //timeTrial();
+        for (int i = 0; i < 20; ++i){
+            System.out.printf("%d | %d | %d\n", fibRecur(i), fibLoop(i), fibMatrix(i));
+        }
     }
 
     public static long fibRecur(long X){
@@ -38,13 +41,58 @@ public class Main {
     public static long fibLoop(long X){
         long x = 0, y = 1, sum = 0;
 
-        for (int i = 2; i < X; ++i){
+        for (int i = 1; i < X; ++i){
             sum = x + y;
             x = y;
             y = sum;
         }
 
         return sum;
+    }
+
+    public static long fibMatrix(long X){
+        long[][] arr = new long[][]{{1,1},{1,0}};
+        if (X == 0){
+            return X;
+        }
+        matrixPower(arr,(int)X-1);
+
+        return arr[0][0];
+
+    }
+
+    public static void matrixPower(long[][] arr, int n){
+        if (n == 0 || n == 1){
+            return;
+        }
+
+        long[][] place = new long[][]{{1,1},{1,0}};
+
+        matrixPower(arr,n/2);
+
+        long a = arr[0][0] * arr[0][0] + arr[0][1] * arr[1][0];
+        long b = arr[0][0] * arr[0][1] + arr[0][1] * arr[1][1];
+        long c = arr[1][0] * arr[0][0] + arr[1][1] * arr[1][0];
+        long d = arr[1][0] * arr[0][1] + arr[1][1] * arr[1][1];
+
+        arr[0][0] = a;
+        arr[0][1] = b;
+        arr[1][0] = c;
+        arr[1][1] = d;
+
+        if (n%2 != 0){
+            long w = arr[0][0] * place[0][0] + arr[0][1] * place[1][0];
+            long x = arr[0][0] * place[0][1] + arr[0][1] * place[1][1];
+            long y = arr[1][0] * place[0][0] + arr[1][1] * place[1][0];
+            long z = arr[1][0] * place[0][1] + arr[1][1] * place[1][1];
+
+            arr[0][0] = w;
+            arr[0][1] = x;
+            arr[1][0] = y;
+            arr[1][1] = z;
+        }
+
+
     }
 
     public static void timeTrial(){
