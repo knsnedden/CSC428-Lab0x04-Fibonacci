@@ -9,8 +9,7 @@ import java.util.ArrayList;
 public class Main {
 
     public static void main(String[] args) {
-        timeTrial();
-
+        //timeTrial();
     }
 
     public static long fibRecur(long X){
@@ -20,6 +19,20 @@ public class Main {
         else{
             return fibRecur(X-1) + fibRecur(X-2);
         }
+    }
+
+    public static long fibCache(long X){
+        long[] cache = new long[(int)X + 2];
+
+        cache[0] = 0;
+        cache[1] = 1;
+
+        for (int i = 2; i < X + 1; i++){
+            cache[i] = cache[i-1] + cache[i-2];
+        }
+
+        return cache[(int)X];
+
     }
 
     public static void timeTrial(){
