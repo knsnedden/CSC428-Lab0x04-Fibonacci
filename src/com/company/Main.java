@@ -9,7 +9,7 @@ import java.util.ArrayList;
 public class Main {
 
     public static void main(String[] args) {
-        //timeTrial();
+        timeTrial();
     }
 
     public static long fibRecur(long X){
@@ -49,14 +49,15 @@ public class Main {
 
     public static void timeTrial(){
         boolean keepGoing = true;
-        long recurTime = 0, maxTime = (long)Math.pow(2,30), prevRecurTime = 0;
-        long cacheTime = 0;
-        int N = 1, recurIndex = 0, cacheIndex = 0;
+        long maxTime = (long)Math.pow(2,30);
+        long cacheTime = 0, recurTime = 0, loopTime = 0;
+        int N = 1, recurIndex = 0, cacheIndex = 0, loopIndex = 0;
         long x = 1, prev_x = 0, result = 0, max = (long)Math.pow(2,63)-1;
-        ArrayList<Long> recurTimeResults = new ArrayList<Long>(), cacheTimeResults = new ArrayList<Long>();
+        ArrayList<Long> recurTimeResults = new ArrayList<Long>(), cacheTimeResults = new ArrayList<Long>(),
+                        loopTimeResults = new ArrayList<Long>();
 
-        System.out.println("                             fibRecur(X)                                               fibCache(X)");
-        System.out.println("   N   |        X       |       fib(X)        |    Time     |    DR    |   Exp. DR   |    Time     |   DR   |  Exp. DR  |");
+        System.out.println("                                                fibRecur(X)                            fibCache(X)                        fibLoop(X)");
+        System.out.println("   N   |        X       |       fib(X)        |    Time     |    DR    |   Exp. DR   |    Time     |   DR   |  Exp. DR  |    Time     |   DR   |  Exp. DR  |");
 
         while (keepGoing){
             System.out.printf("%6d |", N);
@@ -116,7 +117,34 @@ public class Main {
                 System.out.print("      --     |    --    |      --     |");
             }
 
-            if (recurTime >= maxTime && cacheTime >= maxTime){
+            if (loopTime <= maxTime){
+                loopTime = 0;
+                for (int i = 0; i < 10; ++i){
+                    long timeBefore = getCpuTime();
+                    result = fibLoop(x);
+                    long timeAfter = getCpuTime();
+                    loopTime += timeAfter - timeBefore;
+                }
+                loopTime = loopTime/10;
+                loopTimeResults.add(loopTime);
+                System.out.printf("%12d |", loopTime);
+                if (prev_x == 0 || x%2 == 1){
+                    System.out.printf("   --   |    --     |");
+                }
+                else{
+                    float pdr = (float)x/(float)(x/2);
+                    float dr = (float)loopTimeResults.get(loopIndex)/(float)loopTimeResults.get(loopIndex/2);
+                    System.out.printf("%7.2f |%10.2f |",dr, pdr);
+                }
+
+                loopIndex++;
+            }
+            else{
+                System.out.print("      --     |    --    |      --     |");
+            }
+
+
+            if (recurTime >= maxTime && cacheTime >= maxTime && loopTime >= maxTime){
                 keepGoing = false;
             }
             prev_x = x;
