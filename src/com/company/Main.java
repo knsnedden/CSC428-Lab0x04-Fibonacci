@@ -13,29 +13,35 @@ public class Main {
 
     }
 
+    // standard recursion
     public static long fibRecur(long X){
         if (X == 1 || X == 0){
-            return X;
+            return X; // reached bottom
         }
         else{
             return fibRecur(X-1) + fibRecur(X-2);
         }
     }
 
+    // stores all previous fib numbers and accesses them when moving up the list
+    // prevents performing same fib sequence multiple times
+    // cuts time complexity to linear time
     public static long fibCache(long X){
         long[] cache = new long[(int)X + 2];
 
+        // with recursion, same as if(x == 1 || x == 0) return X;
         cache[0] = 0;
         cache[1] = 1;
 
         for (int i = 2; i < X + 1; i++){
-            cache[i] = cache[i-1] + cache[i-2];
+            cache[i] = cache[i-1] + cache[i-2]; // store fib numbers
         }
 
-        return cache[(int)X];
+        return cache[(int)X]; // return highest fib # in sequence
 
     }
 
+    // exact same as fibCache with better storing capabilities
     public static long fibLoop(long X){
         long x = 0, y = 1, sum = 0;
 
@@ -48,6 +54,13 @@ public class Main {
         return sum;
     }
 
+    /* fib sequence with matrix:
+    [(1 1)   ^ n = [ (fib(n + 1) fib(n))
+     (1 0)]          (fib(n)     fib(n-1)) ]
+     the goal of this function is then to find the power matrix to the X - 1 power
+     then the first element of the matrix is the fib sequence
+     this has a time complexity of log(n)
+     */
     public static long fibMatrix(long X){
         long[][] arr = new long[][]{{1,1},{1,0}};
         if (X == 0){
@@ -66,18 +79,21 @@ public class Main {
 
         long[][] place = new long[][]{{1,1},{1,0}};
 
-        matrixPower(arr,n/2);
+        matrixPower(arr,n/2); // recursive: find the the smallest power and work up; n/2 because f(n+1), f(n), and f(n-1) are found
 
+        // multiply the matrix by itself
         long a = arr[0][0] * arr[0][0] + arr[0][1] * arr[1][0];
         long b = arr[0][0] * arr[0][1] + arr[0][1] * arr[1][1];
         long c = arr[1][0] * arr[0][0] + arr[1][1] * arr[1][0];
         long d = arr[1][0] * arr[0][1] + arr[1][1] * arr[1][1];
 
+        // move the results into the matrix
         arr[0][0] = a;
         arr[0][1] = b;
         arr[1][0] = c;
         arr[1][1] = d;
 
+        // if n is odd, this gives correct answer
         if (n%2 != 0){
             long w = arr[0][0] * place[0][0] + arr[0][1] * place[1][0];
             long x = arr[0][0] * place[0][1] + arr[0][1] * place[1][1];
@@ -108,7 +124,7 @@ public class Main {
         while (keepGoing){
             System.out.printf("%6d |", N);
             System.out.printf("%15d |", x);
-            result = fibCache(x);
+            result = fibMatrix(x);
             System.out.printf("%20d |", result);
 
             if (recurTime <= maxTime){
