@@ -155,13 +155,13 @@ public class Main {
 
             if (cacheTime <= maxTime){
                 cacheTime = 0;
-                for (int i = 0; i < 10; ++i){
+                for (int i = 0; i < 1000; ++i){
                     long timeBefore = getCpuTime();
                     result = fibCache(x);
                     long timeAfter = getCpuTime();
                     cacheTime += timeAfter - timeBefore;
                 }
-                cacheTime = cacheTime/10;
+                cacheTime = cacheTime/1000;
                 cacheTimeResults.add(cacheTime);
                 System.out.printf("%12d |", cacheTime);
                 if (prev_x == 0 || x%2 == 1){
@@ -181,13 +181,13 @@ public class Main {
 
             if (loopTime <= maxTime){
                 loopTime = 0;
-                for (int i = 0; i < 10; ++i){
+                for (int i = 0; i < 1000; ++i){
                     long timeBefore = getCpuTime();
                     result = fibLoop(x);
                     long timeAfter = getCpuTime();
                     loopTime += timeAfter - timeBefore;
                 }
-                loopTime = loopTime/10;
+                loopTime = loopTime/1000;
                 loopTimeResults.add(loopTime);
                 System.out.printf("%12d |", loopTime);
                 if (prev_x == 0 || x%2 == 1){
@@ -207,13 +207,13 @@ public class Main {
 
             if (matrixTime <= maxTime){
                 matrixTime = 0;
-                for (int i = 0; i < 10; ++i){
+                for (int i = 0; i < 1000; ++i){
                     long timeBefore = getCpuTime();
                     result = fibMatrix(x);
                     long timeAfter = getCpuTime();
                     matrixTime += timeAfter - timeBefore;
                 }
-                matrixTime = matrixTime/10;
+                matrixTime = matrixTime/1000;
                 matrixTimeResults.add(matrixTime);
                 System.out.printf("%12d |", matrixTime);
                 if (prev_x == 0 || x%2 == 1){
